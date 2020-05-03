@@ -29,7 +29,7 @@ jobs:
         run: |
           pwd
           ls -l
-          grep print mytext.txt > print.txt
+          grep print text/mytext.txt > print.txt
       - name: Upload math result for job 2
         uses: actions/upload-artifact@v1
         with:
@@ -48,5 +48,5 @@ jobs:
       - name: Print the final result
         shell: bash
         run: |
-          value=` grep -c print print.txt`
+          value=`grep -c print greptext/print.txt`
           echo The text has $value occurencies of word print.
