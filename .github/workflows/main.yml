@@ -1,0 +1,52 @@
+name: My test of artifacts
+
+on: [push]
+
+jobs:
+  job_1:
+    name: Create a text file
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          grep --help > mytext.txt
+      - name: Upload text file from job 1
+        uses: actions/upload-artifact@v1
+        with:
+          name: text 
+          path: mytext.txt
+
+  job_2:
+    name: Find something in the file 
+    needs: job_1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download  result for job 1
+        uses: actions/download-artifact@v1
+        with:
+          name: text
+      - shell: bash
+        run: |
+          pwd
+          ls -l
+          grep print mytext.txt > print.txt
+      - name: Upload math result for job 2
+        uses: actions/upload-artifact@v1
+        with:
+          name: greptext
+          path: print.txt
+
+  job_3:
+    name: Display results
+    needs: job_2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download result for job 2
+        uses: actions/download-artifact@v1
+        with:
+          name: greptext
+      - name: Print the final result
+        shell: bash
+        run: |
+          value=` grep -c print print.txt`
+          echo The text has $value occurencies of word print.
